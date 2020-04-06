@@ -1,0 +1,4 @@
+dpkt==1.9.2
+sockets==1.0.0
+matplotlib==3.2.1
+numpy==1.18.2
