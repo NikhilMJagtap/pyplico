@@ -1,5 +1,6 @@
 import dpkt
-from utils import get_headers
+from utils import get_headers, get_http_request
+import types
 
 """
 PacketReader : Reads packets from specified file or interface. 
@@ -35,12 +36,13 @@ class PacketReader():
 			except:
 				raise FileNotFoundError("File {file} not found!")
 			if to_itr:
-				pass
+				self.packets_itr = packets_itr = self.read_itr(f)
 			elif to_list:
 				self.packets = packets = self.read_packets(f)
-			f.close()
+				f.close()
+
+		# TODO: Live packet capture
 		elif interface:
-			# TODO: Live packet capture
 			raise NotImplementedError("Live packet capture not implemented")
 	
 
@@ -64,9 +66,9 @@ class PacketReader():
 					ip = eth.data
 					packets.append((ip, timestamp))
 				total += 1
-			except:
-				# TODO:
-				pass
+			except dpkt.dpkt.UnpackError:
+				continue
+
 		if self.verbose:
 			print(f"Total {total} packets found. Using {total - skipped}.")
 		return packets
@@ -79,14 +81,55 @@ class PacketReader():
 	"""
 	# TODO: implement iterator for reading packets
 	def read_itr(self, f):
-		pass
+		pcaps = dpkt.pcap.Reader(f)
+		try:
+			for timestamp, packet in pcaps:
+				try:
+					eth = dpkt.ethernet.Ethernet(packet)
+					if not isinstance(eth.data, dpkt.ip.IP):
+						continue
+					else:
+						ip = eth.data
+						yield (ip, timestamp)
+
+				except dpkt.dpkt.UnpackError:
+					if self.verbose:
+						print("Failed to Unpack the packet. Sending next packet.")
+					continue
+
+		# This try catch is to supress the ValueError raised in dpkt. Specifically in dpkt/pcap.py
+		# while reading. The error says 'read from closed file'. Checked GitHub repo of dpkt. 
+		# Will try to fix this.
+		
+		except ValueError:
+			pass
+	
+	"""
+	Getter function for packet generator
+	parameters:
+		-
+	returns:
+		- Generator if found else None
+	"""
+	def get_itr(self):
+		try:
+			if isinstance(self.packets_itr, types.GeneratorType):
+				return self.packets_itr
+			else:
+				return None
+		except AttributeError:
+			raise ValueError(f"{self.__class__.__name__} was not initialised using to_itr")
+		
 
 
+"""
+Test function
+"""
 
 def test():
 	r = PacketReader(file="./data/sample.pcap", to_itr=False, to_list=True)
-	print(get_headers(r.packets[0][0]))
-
+	packet_itr = r.get_itr()
+	p = next(packet_itr)
 
 if __name__ == "__main__":
 	test() 
