@@ -102,8 +102,6 @@ def get_http_request(ip, verbose=False):
 	return request_dict
 
 
-
-
 def test():
 	pass
 
