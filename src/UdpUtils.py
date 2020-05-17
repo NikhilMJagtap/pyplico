@@ -1,6 +1,7 @@
 from dpkt.ip import IP
 from dpkt.udp import UDP
 from dpkt.dns import DNS, DNS_QUERY
+from dpkt.dpkt import UnpackError
 
 # TODO: add some doc
 
@@ -41,18 +42,23 @@ class UdpUtils:
 
 
     @staticmethod
-    def get_dns_queries(ip):
+    def get_dns_queries(ip, verbose=False):
         # TODO: check flags in dpkt github
         if not UdpUtils.is_dns(ip):
             raise ValueError("Packet is not a DNS packet")
         udp = ip.data
-        dns_ = DNS(udp.data)
-        # dns is not a query
-        if dns_.opcode != DNS_QUERY:
-            raise ValueError("DNS is not a query")
-        print(dns_.qd[0].name)
-        print(dns_.an[0].name)
-        print(dns_.an[0].ptrname)
-        print(dns_.ns[0].nsname)
-        print(len(dns_.ns))
-        # TODO: complete DNS queries and responses
+        try:
+            dns_ = DNS(udp.data)
+            # dns is not a query
+            if dns_.opcode != DNS_QUERY:
+                raise ValueError("DNS is not a query")
+            query = {
+                'query' : [dns_.qd[i].name for i in range(len(dns_.qd))],    # query domain
+                'server': [dns_.ns[i].nsname for i in range(len(dns_.ns))],  # name server
+                'answer': [dns_.an[i].name for i in range(len(dns_.an))]     # answer
+            }
+            return query
+        except (UnpackError, AttributeError):  # need fix on Attribute error
+            if verbose:
+                print("failed to unpack")
+            return {}

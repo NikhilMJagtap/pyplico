@@ -1,17 +1,21 @@
 """
 Flask app to give web interface for pyplico
 """
-
-
 from flask import Flask
-app = Flask(__name__)
+from flask import render_template
 
+app = Flask(
+        __name__, 
+        static_url_path='', 
+        static_folder='public', 
+        template_folder='public/html'
+    )
 
+DEBUG = True
 
 @app.route('/')
 def home():
-    return '<h3>pyPlico home</h3>'
-
+    return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=DEBUG)

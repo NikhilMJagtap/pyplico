@@ -128,12 +128,11 @@ Test function
 """
 
 def test():
-	# r = PacketReader(file="./data/sample.pcap", to_itr=False, to_list=True)
-	r = PacketReader(file="C:\\Users\\Nikhil Jagtap\\Downloads\\snort.log.1425826469.pcap", to_itr=False, to_list=True)
+	r = PacketReader(file="./data/sample.pcap", to_itr=False, to_list=True)
 	for packet in r.packets:
 		if UdpUtils.is_dns(packet[0]):
 			print(UdpUtils.get_dns_queries(packet[0]))
-			break
+			# break
 
 if __name__ == "__main__":
 	test() 
