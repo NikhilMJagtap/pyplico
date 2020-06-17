@@ -1,8 +1,6 @@
 import dpkt
-from utils import get_headers, get_http_request
 import types
-from UdpUtils import UdpUtils
-
+from smtp_utils import SMTPUtils
 """
 PacketReader : Reads packets from specified file or interface. 
 If file is specified, packets from .pcap files will be read.
@@ -130,9 +128,15 @@ Test function
 def test():
 	r = PacketReader(file="./data/sample.pcap", to_itr=False, to_list=True)
 	for packet in r.packets:
-		if UdpUtils.is_dns(packet[0]):
-			print(UdpUtils.get_dns_queries(packet[0]))
-			# break
+		if SMTPUtils.is_smtp(packet[0]):
+			print("SMTP")
+			break
+
+
 
 if __name__ == "__main__":
 	test() 
+	# tested for udp utils
+	# tested for iter
+	# tested for utils
+	# tested for packet reader
