@@ -17,5 +17,9 @@ DEBUG = True
 def home():
     return render_template('index.html')
 
+@app.route('/analyse')
+def analyse():
+    return render_template('analyse.html')
+
 if __name__ == "__main__":
     app.run(debug=DEBUG)
