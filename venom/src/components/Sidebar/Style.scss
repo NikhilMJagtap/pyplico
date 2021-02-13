@@ -1,0 +1,95 @@
+@import '../../styles/common.scss';
+
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    background: #141E30;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #243B55, #141E30);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: whitesmoke;
+    transition: width 0.1s ease-in-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    
+    .heading {
+        display: flex;
+        justify-content: space-between;
+        font-family:sans-serif;
+        position: relative;
+        padding: 15px 15px;
+        cursor: pointer;
+
+        .sidebar-title {
+            width: 80%;
+            text-align: center;
+            h4 {
+                margin: 0;
+                font-weight: 500;
+                letter-spacing: 10px;
+            }
+            p {
+                margin: 0;
+                margin-top: 5px;
+                font-size: small;
+                bottom: 0;
+                white-space: nowrap;
+            }
+        }
+        .sidebar-logo {
+            float: left;
+            width: 24px;
+            color: whitesmoke;
+            -webkit-filter: invert(100%);
+            filter: invert(100%);
+            max-height: 52px;
+            margin: auto 0;
+        }
+    }
+
+    .divider {
+        height: 1px;
+        background-color: $divider;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .options {
+        position: absolute;
+    }
+
+    .collapse-option {
+        position: absolute;
+        bottom: 0;
+        img {
+            -webkit-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.sidebar.collapsed {
+    width: 50px;
+    .heading {
+        height: 38px;
+        .sidebar-title {
+            display: none;
+        }
+    }
+    .collapse-option {
+        position: absolute;
+        bottom: 0;
+        img {
+            -webkit-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}

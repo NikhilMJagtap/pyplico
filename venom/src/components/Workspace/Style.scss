@@ -1,0 +1,20 @@
+@import '../../styles//common.scss';
+
+.workspace-wrapper {
+    header {
+        margin-top: 0;
+    }
+    margin-left: 235px;
+    text-align: justify;
+    .workspace {
+        padding: 10px 20px;
+        .ws-title {
+            margin-left: 12px;
+            padding: 0;
+        }
+    }
+}
+
+.workspace-wrapper.collapsed {
+    margin-left: 54px;
+}
