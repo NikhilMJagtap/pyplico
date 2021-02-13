@@ -4,4 +4,6 @@
 pyvenv.cfg
 .vscode/*
 /node_modules/*
+/bower_components/*
+.eslintcache
 /data/
