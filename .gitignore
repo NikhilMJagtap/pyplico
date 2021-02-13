@@ -3,3 +3,5 @@
 /Scripts/*
 pyvenv.cfg
 .vscode/*
+/node_modules/*
+/data/
