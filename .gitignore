@@ -1,4 +1,5 @@
 /src/__pycache__/*
+*/__pycache__/*
 /Lib/*
 /Scripts/*
 pyvenv.cfg
@@ -14,4 +15,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 */.eslintcache
-/data/
+*/data/*
+*/build/*
+*/dist/*
+*/env/*
+*/*-info/*
+*.pyc
