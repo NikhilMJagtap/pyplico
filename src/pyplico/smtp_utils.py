@@ -1,6 +1,6 @@
 from dpkt.tcp import TCP
 from dpkt.ip import IP
-from udp_utils import UdpUtils
+from pyplico.udp_utils import UdpUtils
 
 #  TODO: shift is_tcp function to staticscope of tcp_utils
 def is_tcp(ip, verbose=False):

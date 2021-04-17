@@ -1,8 +1,8 @@
 import dpkt
 import types
-from smtp_utils import SMTPUtils
-from udp_utils import UdpUtils
-from utils import get_headers, get_http_request
+from pyplico.smtp_utils import SMTPUtils
+from pyplico.udp_utils import UdpUtils
+from pyplico.utils import get_headers, get_http_request
 
 """
 PacketReader : Reads packets from specified file or interface. 
