@@ -1,16 +1,7 @@
 from dpkt.tcp import TCP
 from dpkt.ip import IP
 from pyplico.udp_utils import UdpUtils
-
-#  TODO: shift is_tcp function to staticscope of tcp_utils
-def is_tcp(ip, verbose=False):
-    if not isinstance(ip, IP):
-        raise ValueError(f"Argument IP should be instance of dpkt.ip.IP")
-    tcp = ip.data
-    if isinstance(tcp, TCP):
-        return True
-    return False
-
+from pyplico.tcp_utils import TCPUtils
 
 #  TODO: add docs 
 
@@ -33,14 +24,21 @@ class SMTPUtils:
     @staticmethod
     def is_smtp(ip, verbose=False):
         ports = [25, 465, 587]
-        # change is_tcp to TCPUtils.is_tcp() after smtp staging
-        if is_tcp(ip) or UdpUtils.is_udp(ip):
+        if TCPUtils.is_tcp(ip) or UdpUtils.is_udp(ip):
             tcp = ip.data
             if tcp.sport in ports or tcp.dport in ports:
-                print(tcp.data)
                 return True
             return False
         else:
             if verbose:
                 print(f"ip is neither TCP nor UDP.")
             return False
+
+    @staticmethod
+    def get_smtp_details(ip, verbose=False):
+        if not SMTPUtils.is_smtp(ip):
+            raise ValueError("Given packet is not SMTP packet.")
+        tcp = ip.data
+        if len(tcp.data):
+            print(repr(tcp.data), len(tcp.data))
+            # ON HOLD  till flow table gets done

@@ -18,15 +18,17 @@ class PacketReader():
 		- interface (str) : interface ID to capture live packet from
 		- to_itr (bool) : store packets in iterator
 		- to_list (bool) : store packets in python list
+		- sort (bool) : sort the packets by timestamp, works only with to_list as of now
 		- verbose : print status to stdout
 
 	"""
 
-	def __init__(self, file=None, interface=None, to_itr=True, to_list=False, verbose=False):
+	def __init__(self, file=None, interface=None, to_itr=True, to_list=False, sort=False, verbose=False):
 		self.file = file
 		self.interface = interface
 		self.to_itr = to_itr
 		self.to_list = to_list
+		self.sort = sort
 		self.verbose = verbose
 		if not file and not interface:
 			raise ValueError("File or Network interface is required")
@@ -36,12 +38,14 @@ class PacketReader():
 			try:
 				f = open(file, 'rb')
 			except:
-				raise FileNotFoundError("File {file} not found!")
+				raise FileNotFoundError(f"File {file} not found!")
 			if to_itr:
 				self.packets_itr = packets_itr = self.read_itr(f)
 			elif to_list:
 				self.packets = packets = self.read_packets(f)
 				f.close()
+				if self.sort:
+					self.packets.sort(key=lambda x:x[1])
 
 		# TODO: Live packet capture
 		elif interface:
