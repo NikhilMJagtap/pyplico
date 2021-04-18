@@ -1,6 +1,9 @@
 import dpkt
 import types
-from smtp_utils import SMTPUtils
+from pyplico.smtp_utils import SMTPUtils
+from pyplico.udp_utils import UdpUtils
+from pyplico.utils import get_headers, get_http_request
+
 """
 PacketReader : Reads packets from specified file or interface. 
 If file is specified, packets from .pcap files will be read.
@@ -126,11 +129,14 @@ Test function
 """
 
 def test():
-	r = PacketReader(file="./data/sample.pcap", to_itr=False, to_list=True)
+	r = PacketReader(file="./data/dns.cap", to_itr=False, to_list=True)
 	for packet in r.packets:
 		if SMTPUtils.is_smtp(packet[0]):
 			print("SMTP")
 			break
+		if UdpUtils.is_dns(packet[0]):
+			print(UdpUtils.get_dns_queries(packet[0], verbose=True), "DNS")
+			# break
 
 
 

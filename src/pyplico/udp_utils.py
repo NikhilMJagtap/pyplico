@@ -8,7 +8,7 @@ from dpkt.dpkt import UnpackError
 class UdpUtils:
 
     @staticmethod
-    def is_upd(ip, verbose=False):
+    def is_udp(ip, verbose=False):
         if not isinstance(ip, IP):
             raise ValueError(f"Argument IP should be instance of dpkt.ip.IP")
         udp = ip.data
@@ -19,7 +19,7 @@ class UdpUtils:
     @staticmethod
     def get_udp_details(ip):
         # checking the packet is UDP or no
-        if not UdpUtils.is_upd(ip):
+        if not UdpUtils.is_udp(ip):
             raise ValueError("Given packet is not UDP packet")
         else:
             # getting UDP data in dictionary
@@ -33,7 +33,7 @@ class UdpUtils:
 
     @staticmethod
     def is_dns(ip):
-        if not UdpUtils.is_upd(ip):
+        if not UdpUtils.is_udp(ip):
             return False
         udp = ip.data
         if udp.sport == 53 or udp.dport == 53:

@@ -1,6 +1,6 @@
 from dpkt.tcp import TCP
 from dpkt.ip import IP
-from udp_utils import UdpUtils
+from pyplico.udp_utils import UdpUtils
 
 #  TODO: shift is_tcp function to staticscope of tcp_utils
 def is_tcp(ip, verbose=False):
@@ -34,7 +34,7 @@ class SMTPUtils:
     def is_smtp(ip, verbose=False):
         ports = [25, 465, 587]
         # change is_tcp to TCPUtils.is_tcp() after smtp staging
-        if is_tcp(ip) or UdpUtils.is_upd(ip):
+        if is_tcp(ip) or UdpUtils.is_udp(ip):
             tcp = ip.data
             if tcp.sport in ports or tcp.dport in ports:
                 print(tcp.data)

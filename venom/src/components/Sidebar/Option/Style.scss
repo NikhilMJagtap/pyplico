@@ -1,0 +1,90 @@
+@import '../../../styles/common.scss';
+
+.option {
+    width: 100%;
+    margin: 10px 0;
+    height: 24px;
+    display: flex;
+
+    .selected-option-mark {
+        width: 4px;
+        border-radius: 2px;
+        background-color: $optionSelectedMark;
+        visibility: hidden;
+    }
+
+    img {
+        width: 24px;
+        filter: brightness(0) invert(1);
+        margin-left: 10px;
+        opacity: 0.5;
+    }
+
+    .option-text {
+        margin-left: 15px;
+        line-height: 24px;
+        font-weight: 600;
+        color: $unselectedOption;
+    }
+
+    &:hover{
+        cursor: pointer;
+        .option-text {
+            color: $unselectedOptionHover;
+        }
+        .tooltip {
+            background-color: black;
+            color: white;
+            display: inline-block;
+            margin-left: 50px;
+            padding: 3px 5px;
+            font-size: small;
+            border-radius: 3px;
+            opacity: 0.95;
+            line-height: 18px;
+            position: fixed;
+            z-index: 100;
+
+            &::before {
+                content: " ";
+                position: absolute;
+                right: 100%;
+                top: 50%;
+                margin-top: -3px;
+                border-width: 3px;
+                border-style: solid;
+                opacity: 0.95;
+                border-color: transparent black transparent transparent;
+            }
+        }
+    }
+    .tooltip {
+        display: none;
+    }
+}
+
+.option.selected {
+    .selected-option-mark {
+        visibility: visible;
+    }
+    .option-text {
+        color: $selectedOptionColor;
+    }
+    img {
+        opacity: 1;
+    }
+}
+
+.suboptions {
+    .suboption {
+        margin-left: 54px;
+        color: $unselectedOption;
+        letter-spacing: 0px;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+        &:hover {
+            color: $unselectedOptionHover;
+        }
+    }
+}
