@@ -21,7 +21,11 @@ class FlowTable:
             pass
         else:
             self.table[_key] = []
-        insort(self.table[_key], self._get_entity(ip, _key))
+        _flow = self.table[_key]
+        _entity = self._get_entity(ip, _key)
+        _index = self._get_index_to_insert(_entity, _flow)
+        _flow.insert(_index, _entity)
+        self.table[_key] = _flow
 
     def _get_lookup_key(self, ip):
         tcp = ip.data
@@ -33,3 +37,16 @@ class FlowTable:
         return FlowTableEntity(
             ip, key
         )
+
+    def _get_index_to_insert(self, entity, flow):
+        curr_ack = entity.tcp.ack
+        curr_seq = entity.tcp.seq
+        next_seq = entity.next_seq
+        if len(flow) == 0:
+            return 0
+        for i in range(len(flow)):
+            if flow[i].tcp.seq == curr_ack:
+                return i+1
+            elif flow[i].tcp.ack == next_seq:
+                return i
+        return len(flow)
