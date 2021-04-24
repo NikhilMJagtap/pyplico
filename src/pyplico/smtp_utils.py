@@ -1,8 +1,10 @@
+import re
 from dpkt.tcp import TCP
 from dpkt.ip import IP
 from pyplico.udp_utils import UdpUtils
 from pyplico.tcp_utils import TCPUtils
 from pyplico.constants import smtp
+from pyplico.utils import from_b64
 
 #  TODO: add docs 
 
@@ -25,7 +27,7 @@ class SMTPUtils:
             returns:
                 - bool: true if ip is SMTP else false
         """
-        ports = [25, 465, 587]
+        ports = smtp.PORTS
         if TCPUtils.is_tcp(ip) or UdpUtils.is_udp(ip):
             tcp = ip.data
             if tcp.sport in ports or tcp.dport in ports:
@@ -51,7 +53,8 @@ class SMTPUtils:
             raise ValueError("Given packet is not SMTP packet.")
         tcp = ip.data
         if len(tcp.data):
-            print(repr(tcp.data), len(tcp.data))
+            pass
+            # print(repr(tcp.data), len(tcp.data))
             # ON HOLD  till flow table gets done
 
     @staticmethod
@@ -78,7 +81,7 @@ class SMTPUtils:
                     _pass = _pass.decode()
                     _pass = _pass.replace("\n", "")
                     _pass = _pass.replace("\r", "")
-                    cred["password"] = _pass
+                    cred["password"] = from_b64(_pass)
                     
                     for j in range(i, 0, -1):
                         _user_flow_entity = __flow[j]
@@ -87,7 +90,7 @@ class SMTPUtils:
                             _user = _user.decode()
                             _user = _user.replace("\n", "")
                             _user = _user.replace("\r", "")
-                            cred["username"] = _user
+                            cred["username"] = from_b64(_user)
                 
                     __creds.append(cred)
 
@@ -106,5 +109,48 @@ class SMTPUtils:
                 continue
             for index in range(len(_flow)):
                 if(_flow[index].tcp.data == smtp.AUTH_SUCCESS_235):
-                    credentials.append(_index_password_helper(index, _flow))
+                    credentials += _index_password_helper(index, _flow)
         return credentials
+
+    @staticmethod
+    def hunt_mail_address(ft, connection="all", verbose=False):
+        """
+        Basic addresses miner from TCP/SMTP packet flow. Works on non SSL connections.
+        parameters:
+            - ft : FlowTable created from pyplico.flowtable
+            - connection: String or List of Strings
+                str  : key for connection in FlowTable
+                list : list of keys in connection in FlowTable
+                all  : default value mines all connections
+            - verbose: bool
+        """
+
+        def get_address_from_data(data):
+            addr = data.decode()
+            regex = re.search('<(.*)>', addr)
+            if regex:
+                return regex.group(1)
+            return addr
+
+        connections = ft.table.keys()
+        if connection != "all":
+            if isinstance(connection, list):
+                connection = connection
+            elif isinstance(connection, str):
+                connection = [connection]
+        addresses = dict()
+        addresses['from'] = list()
+        addresses['to'] = list() 
+
+        for _con in connections:
+            _flow = ft.table.get(_con)
+            if not _flow:
+                continue
+            for index in range(len(_flow)):
+                if _flow[index].tcp.data.find(smtp.MAIL_FROM) != -1:
+
+                    addresses['from'].append(get_address_from_data(_flow[index].tcp.data))
+                elif _flow[index].tcp.data.find(smtp.RCPT_TO) != -1:
+                    addresses['to'].append(get_address_from_data(_flow[index].tcp.data))
+        
+        return addresses
