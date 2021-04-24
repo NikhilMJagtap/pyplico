@@ -2,7 +2,7 @@
 Utilities to wrap various use cases of dpkt
 """
 
-
+import base64
 import dpkt
 from dpkt.http import Message
 import socket
@@ -100,6 +100,10 @@ def get_http_request(ip, verbose=False):
 		print(f"Method: {request.method}")
 		print(f"Message: {msg}")
 	return request_dict
+
+def from_b64(s, to_str=True):
+	decoded = base64.b64decode(s) 
+	return decoded.decode() if to_str else decoded
 
 
 def test():
