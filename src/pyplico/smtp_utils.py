@@ -57,7 +57,14 @@ class SMTPUtils:
     @staticmethod
     def hunt_credentials(ft, connection="all", verbose=False):
         """
-
+        A very basic credentials miner from TCP/SMTP packet flow. Works on non SSL connections.
+        parameters:
+            - ft : FlowTable created from pyplico.flowtable
+            - connection: String or List of Strings
+                str  : key for connection in FlowTable
+                list : list of keys in connection in FlowTable
+                all  : default value mines all connections
+            - verbose: bool
         """
         
         def _index_password_helper(__index, __flow):
@@ -88,12 +95,16 @@ class SMTPUtils:
         
         connections = ft.table.keys()
         if connection != "all":
-            connections = [connection]
-
+            if isinstance(connection, list):
+                connection = connection
+            elif isinstance(connection, str):
+                connection = [connection]
+        credentials = []
         for _con in connections:
             _flow = ft.table.get(_con)
             if not _flow:
                 continue
             for index in range(len(_flow)):
                 if(_flow[index].tcp.data == smtp.AUTH_SUCCESS_235):
-                    print(_index_password_helper(index, _flow))
+                    credentials.append(_index_password_helper(index, _flow))
+        return credentials

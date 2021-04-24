@@ -46,7 +46,15 @@ class FlowTable:
             return 0
         for i in range(len(flow)):
             if flow[i].tcp.seq == curr_ack:
+                if i+1 < len(flow) and (flow[i+1].ack == curr_seq or flow[i+1].seq == curr_ack or flow[i+1].seq < curr_seq):
+                    continue
+                return i+1
+            elif flow[i].tcp.ack == curr_ack:
+                if i+1 < len(flow) and (flow[i+1].seq < curr_seq):
+                    continue
                 return i+1
             elif flow[i].tcp.ack == next_seq:
+                if i+1 != len(flow) and flow[i+1].tcp.ack == next_seq:
+                    continue
                 return i
         return len(flow)

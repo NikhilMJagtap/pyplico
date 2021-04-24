@@ -14,6 +14,9 @@ class TestFlowTable(unittest.TestCase):
                 pass
 
         SMTPUtils.hunt_credentials(ft, connection="192.168.1.4__217.12.11.66__1470__587")
+        flow = ft.table.get("192.168.1.4__217.12.11.66__1470__587")
+        for f in flow:
+            print(f.tcp.seq)
 
 if __name__ == "__main__":
     unittest.main()
