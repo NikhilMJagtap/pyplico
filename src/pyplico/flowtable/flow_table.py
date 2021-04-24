@@ -1,4 +1,3 @@
-from bisect import insort
 from pyplico.flowtable.flow_table_entity import FlowTableEntity
 from pyplico.tcp_utils import TCPUtils
 from pyplico.utils import ip_addr_to_str
