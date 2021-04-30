@@ -14,7 +14,7 @@ const Workspace = (props) => {
 
 const mapStateToProps = state => {
     return {
-        sidebarCollapsed: state.sidebarCollapsed            
+        sidebarCollapsed: state.root.sidebarCollapsed            
     }
 }
 
