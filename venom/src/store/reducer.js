@@ -1,6 +1,5 @@
-
 const initialState = {
-    sidebarCollapsed: false
+    sidebarCollapsed: false,
 };
 
 const reducer = (state=initialState, action) => {

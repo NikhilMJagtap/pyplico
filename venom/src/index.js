@@ -4,10 +4,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux'; 
-import { createStore } from 'redux';
+import { combineReducers, createStore } from 'redux';
 import reducer from './store/reducer';
+import headerOptionsReducers from './store/headerOptionsReducer';
 
-const store = createStore(reducer);
+const store = createStore(
+    combineReducers({
+      root: reducer,
+      header: headerOptionsReducers,
+  })
+);
 
 ReactDOM.render(
   <Provider store={store}>

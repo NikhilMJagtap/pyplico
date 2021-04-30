@@ -1,5 +1,56 @@
 @import '../../styles/common.scss';
 
 .dropdown {
+    height: inherit;
+    width: 100%;
+    margin: 5px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    border: 1px solid $borderGrey;   
+    border-radius: 5px;
+    position: relative;
+    .dropdown-title {
+        display: flex;
+        height: 100%;
+        padding: 0 10px;
+        align-items: center;
+    }
+    .dropdown-options {
+        display: none;
+    }
+    &:hover {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border: 1px solid black;
+
+        .dropdown-options {
+            display: block;
+            background-color: $backgroundGreyDropdown;
+            border: 1px solid $borderGrey;
+            box-shadow:  0 4px 8px 0 $shadowStartGradient, 0 6px 20px 0 $shadowEndGradient;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .dropdown-option {
+            height: 30px;
+            align-items: center;
+            display: flex;
+            position: relative;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 0 5px;
+            border-bottom: 1px solid $borderGrey;
+
+            &:last-child {
+                border: none;
+            }
+
+            .dropdown-option-checkbox {
+                position: absolute;
+                right: 0;
+                margin-right: 8px;
+            }
+        }
+    }
     
 }
