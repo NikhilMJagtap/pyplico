@@ -23,12 +23,8 @@ python setup.py install
 
 Reading PCAP file and extracting SMTP Credentials
 ``` python
+from pyplico.packetReader import PacketReader
 pr = PacketReader("../src/data/smtp.pcap", to_itr=False, to_list=True)
-ft = FlowTable()
-for packet in pr.packets:
-    try:
-        ft.push(packet[0])
-    except ValueError:
-        pass
+ft = pr.get_flow_table()
 creds = SMTPUtils.hunt_credentials(ft)
 ```
