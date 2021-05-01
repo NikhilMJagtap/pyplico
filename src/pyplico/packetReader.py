@@ -53,7 +53,7 @@ class PacketReader():
 				if to_ft:
 					self.ft = FlowTable()
 					for packet in self.packets:
-							self.ft.push(packet[0])
+						self.ft.push(packet[0])
 
 		# TODO: Live packet capture
 		elif interface:
