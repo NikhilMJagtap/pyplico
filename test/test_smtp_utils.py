@@ -1,11 +1,10 @@
 import unittest
 from pyplico.packetReader import PacketReader
 from pyplico.smtp_utils import SMTPUtils
-from pyplico.flowtable import FlowTable
 
 class TestSMTP(unittest.TestCase):
 
-    pr = PacketReader("../src/data/smtp.pcap", to_itr=False, to_list=True)
+    pr = PacketReader("../src/data/smtp.pcap", to_itr=False, to_list=True, to_ft=True)
 
     def test_smtp_details(self):
         pr = self.pr
@@ -17,12 +16,7 @@ class TestSMTP(unittest.TestCase):
 
     def test_smtp_hunt_credentials(self):
         pr = self.pr
-        ft = FlowTable()
-        for packet in pr.packets:
-            try:
-                ft.push(packet[0])
-            except ValueError:
-                pass
+        ft = pr.get_flow_table()
         creds = SMTPUtils.hunt_credentials(ft, connection="192.168.1.4__217.12.11.66__1470__587")
         assert len(creds) == 1
         assert creds[0]['password'] == 'V1v1tr0n'
@@ -30,13 +24,8 @@ class TestSMTP(unittest.TestCase):
 
     def test_smtp_hunt_address(self):
         pr = self.pr
-        ft = FlowTable()
-        for packet in pr.packets:
-            try:
-                ft.push(packet[0])
-            except ValueError:
-                pass
-
+        ft = pr.get_flow_table()
+        
         addresses = SMTPUtils.hunt_mail_address(ft, connection="192.168.1.4__217.12.11.66__1470__587")
         assert 'from' in addresses.keys()
         assert 'to' in addresses.keys()

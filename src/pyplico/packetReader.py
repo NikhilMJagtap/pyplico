@@ -3,6 +3,7 @@ import types
 from pyplico.smtp_utils import SMTPUtils
 from pyplico.udp_utils import UdpUtils
 from pyplico.utils import get_headers, get_http_request
+from pyplico.flowtable import FlowTable
 
 """
 PacketReader : Reads packets from specified file or interface. 
@@ -18,16 +19,19 @@ class PacketReader():
 		- interface (str) : interface ID to capture live packet from
 		- to_itr (bool) : store packets in iterator
 		- to_list (bool) : store packets in python list
+		- to_ft (bool) : create flow table
 		- sort (bool) : sort the packets by timestamp, works only with to_list as of now
 		- verbose : print status to stdout
 
 	"""
 
-	def __init__(self, file=None, interface=None, to_itr=True, to_list=False, sort=False, verbose=False):
+	def __init__(self, file=None, interface=None, to_itr=True, to_list=False, to_ft=False, sort=False, verbose=False):
 		self.file = file
 		self.interface = interface
 		self.to_itr = to_itr
 		self.to_list = to_list
+		self.to_ft = to_ft
+		self.ft = None
 		self.sort = sort
 		self.verbose = verbose
 		if not file and not interface:
@@ -44,8 +48,12 @@ class PacketReader():
 			elif to_list:
 				self.packets = packets = self.read_packets(f)
 				f.close()
-				if self.sort:
+				if self.sort or self.to_ft:
 					self.packets.sort(key=lambda x:x[1])
+				if to_ft:
+					self.ft = FlowTable()
+					for packet in self.packets:
+						self.ft.push(packet[0])
 
 		# TODO: Live packet capture
 		elif interface:
@@ -126,6 +134,8 @@ class PacketReader():
 		except AttributeError:
 			raise ValueError(f"{self.__class__.__name__} was not initialised using to_itr")
 		
+	def get_flow_table(self):
+		return self.ft
 
 
 """
