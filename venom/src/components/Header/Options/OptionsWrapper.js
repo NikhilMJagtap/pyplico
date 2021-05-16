@@ -18,7 +18,11 @@ const OptionsWrapper = (props) => {
                             option.selected = i;
                         }
                     }
-                })
+                });
+                console.log(idx, type, key, data);
+                break;
+            case "textinput":
+                option.value = data.value;
                 break;
             default:
                 console.log(idx, type, key, data);
@@ -40,6 +44,7 @@ const OptionsWrapper = (props) => {
                         onClick={optionsClickHandler}
                         idx={idx}
                         selected={op.selected}
+                        value={op.value}
                     />
                 ))
             }

@@ -6,21 +6,24 @@ const HeaderOptions = {
                 key: "decode_method",
                 options: [
                     {"text": "Single Shot", "key": "single", "selected": true},
-                    {"text": "Recursive", "key": "recursive", "selected": false}
+                    {"text": "Recursive", "key": "recursive", "selected": false},
+                    {"text": "Match Regex", "key": "regex", "selected": false}
                 ],
                 type: "dropdown",
                 multiselect: false,
                 selected: 0
             },
             {
-                title: "Character Set",
-                key: "char_set",
-                options: [
-                    {"text": "UTF-8", "key": "utf", "selected": true},
-                    {"text": "ASCII", "key": "ascii", "selected": false}
-                ],
-                type: "dropdown",
-                multiselect: true
+                title: "No. of Rounds",
+                key: "rounds",
+                type: "textinput",
+                value: 1,
+            },
+            {
+                title: "Match RegEx",
+                key: "regex",
+                type: "textinput",
+                value: "",
             }
         ]
     }
