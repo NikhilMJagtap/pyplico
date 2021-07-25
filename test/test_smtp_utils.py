@@ -32,6 +32,10 @@ class TestSMTP(unittest.TestCase):
         assert 'xxxxxx@xxxxx.co.uk' in addresses['from']
         assert 'xxxxxx.xxxx@xxxxx.com' in addresses['to']
 
+    def test_smtp_mail_data(self):
+        pr = self.pr
+        ft = pr.get_flow_table()
+        SMTPUtils.get_mail_details(ft, connection="192.168.1.4__217.12.11.66__1470__587")
         
 
 if __name__ == "__main__":

@@ -96,12 +96,7 @@ class SMTPUtils:
 
             return __creds
         
-        connections = ft.table.keys()
-        if connection != "all":
-            if isinstance(connection, list):
-                connection = connection
-            elif isinstance(connection, str):
-                connection = [connection]
+        connections = SMTPUtils.get_connections_for_ft(ft, connection)
         credentials = []
         for _con in connections:
             _flow = ft.table.get(_con)
@@ -132,12 +127,7 @@ class SMTPUtils:
                 return regex.group(1)
             return addr
 
-        connections = ft.table.keys()
-        if connection != "all":
-            if isinstance(connection, list):
-                connection = connection
-            elif isinstance(connection, str):
-                connection = [connection]
+        connections = SMTPUtils.get_connections_for_ft(ft, connection)
         addresses = dict()
         addresses['from'] = list()
         addresses['to'] = list() 
@@ -154,3 +144,33 @@ class SMTPUtils:
                     addresses['to'].append(get_address_from_data(_flow[index].tcp.data))
         
         return addresses
+
+    @staticmethod
+    def get_connections_for_ft(ft, connection="all"):
+        connections = ft.table.keys()
+        if connection != "all":
+            if isinstance(connection, list):
+                connections = connection
+            elif isinstance(connection, str):
+                connections = [connection]
+        return connections
+
+    @staticmethod
+    def get_mail_details(ft, connection="all", verbose=False):
+        connections = SMTPUtils.get_connections_for_ft(ft, connection)
+        
+        def get_rcpt_indices(__flow):
+            indices = list()
+            for idx, f in enumerate(__flow):
+                if f.tcp.data.find(smtp.RCPT_TO) != -1:
+                    indices.append(idx)
+            return indices
+
+        for connection in connections:
+            __flow = ft.table.get(connection)
+            # find RCPT of mail
+            indices = get_rcpt_indices(__flow)
+            # check 250 OK
+            # check Data
+            # check 354 
+            # Read Data fragment
