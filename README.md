@@ -14,7 +14,7 @@ There are many tools available to do stuff with pcap files. I felt the need of a
 ```
 virtualenv env
 source env/bin/activate
-pip install -r requirements
+pip install -r requirements.txt
 cd src
 python setup.py install
 ```
@@ -24,7 +24,14 @@ python setup.py install
 Reading PCAP file and extracting SMTP Credentials
 ``` python
 from pyplico.packetReader import PacketReader
+from pyplico.smtp_utils import SMTPUtils
 pr = PacketReader("../src/data/smtp.pcap", to_itr=False, to_list=True)
 ft = pr.get_flow_table()
 creds = SMTPUtils.hunt_credentials(ft)
+
+from pyplico.packetReader import PacketReader
+from pyplico.ftp_utils import FTPUtils
+pr = PacketReader("../src/data/ftp.pcap", to_list=True)
+for x in pr.packets:
+    print(FTPUtils.is_ftp(x[0]))
 ```
